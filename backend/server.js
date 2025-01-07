@@ -1,9 +1,11 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const mongoose = require('mongoose');
 dotenv.config();
 const port = process.env.PORT || 5000;
 const products = require('./data/products');
+const connectDB = require('./config/db');
 
 const app = express();
 
@@ -26,6 +28,8 @@ app.get('/api/product/:id', (req, res) => {
 app.get('*', (req, res) => {
   res.status(404).send('Not Found');
 });
+
+connectDB();
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
