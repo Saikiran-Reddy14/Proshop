@@ -11,7 +11,9 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/products');
-        setProducts(res.data.default);
+        console.log(res.data);
+
+        setProducts(res.data);
       } catch (error) {
         console.error(error);
       }
