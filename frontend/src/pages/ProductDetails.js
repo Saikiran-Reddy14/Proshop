@@ -21,18 +21,24 @@ const ProductDetails = () => {
     );
   }
 
+  const calculateTotalPrice = (price) => {
+    const itemsPrice = price;
+    const shippingPrice = itemsPrice >= 500 ? 0 : 99;
+    const taxPrice = (0.18 * itemsPrice).toFixed(0);
+
+    return Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice);
+  };
+
   return (
     <>
       <Link className="btn btn-light my-3" to="/">
         Go Back
       </Link>
       <Row>
-        {/* Product Image */}
         <Col md={6}>
           <Image src={product.image} alt={product.name} fluid />
         </Col>
 
-        {/* Product Details */}
         <Col md={6}>
           <ListGroup variant="flush">
             <ListGroup.Item>
@@ -48,14 +54,13 @@ const ProductDetails = () => {
           </ListGroup>
         </Col>
 
-        {/* Purchase Section */}
         <Col md={6} className="mt-4">
           <Card>
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <Row>
                   <Col>Price:</Col>
-                  <Col>₹{(product.price * 82).toFixed(0)}</Col>
+                  <Col>₹{calculateTotalPrice(product.price)}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>

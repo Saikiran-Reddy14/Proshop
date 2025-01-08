@@ -1,7 +1,15 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Rating from './Rating';
+
+const calculateTotalPrice = (price) => {
+  const itemsPrice = price;
+  const shippingPrice = itemsPrice >= 500 ? 0 : 99;
+  const taxPrice = (0.18 * itemsPrice).toFixed(0);
+
+  return Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice);
+};
 
 const Product = ({ product }) => {
   return (
@@ -23,8 +31,9 @@ const Product = ({ product }) => {
             />
           </Card.Text>
           <Card.Text as={'h3'} className="mt-1">
-            ₹{(product.price * 82).toFixed(0)}
+            ₹{calculateTotalPrice(product.price)}
           </Card.Text>
+          <Button className="mt-1">Add to Cart</Button>
         </Card.Body>
       </Card>
     </>
