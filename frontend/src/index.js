@@ -7,18 +7,22 @@ import App from './App';
 import HomePage from './pages/HomePage';
 import ProductDetails from './pages/ProductDetails';
 import ErrorPage from './pages/ErrorPage';
+import { Provider } from 'react-redux';
+import store from './store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />}>
-          <Route index path="/" element={<HomePage />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="*" element={<ErrorPage />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />}>
+            <Route index path="/" element={<HomePage />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="*" element={<ErrorPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
