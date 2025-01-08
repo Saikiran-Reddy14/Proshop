@@ -1,22 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
-import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
 import Rating from '../components/Rating';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
 
 const ProductDetails = () => {
-  const [product, setProduct] = useState({});
-  const { id: productId } = useParams();
-  useEffect(() => {
-    const fetchProduct = async () => {
-      const res = await axios.get(
-        `http://localhost:5000/api/products/${productId}`
-      );
-      setProduct(res.data);
-    };
-    fetchProduct();
-  }, [productId]);
+  const { id } = useParams();
+  const { data: product, isLoading, error } = useGetProductDetailsQuery(id);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return (
+      <Message variant="danger">{error?.data?.message || error.error}</Message>
+    );
+  }
 
   return (
     <>
@@ -24,10 +27,13 @@ const ProductDetails = () => {
         Go Back
       </Link>
       <Row>
-        <Col md={6} sm={12} lg={6}>
+        {/* Product Image */}
+        <Col md={6}>
           <Image src={product.image} alt={product.name} fluid />
         </Col>
-        <Col md={6} sm={12} lg={6}>
+
+        {/* Product Details */}
+        <Col md={6}>
           <ListGroup variant="flush">
             <ListGroup.Item>
               <h3>{product.name}</h3>
@@ -41,7 +47,9 @@ const ProductDetails = () => {
             <ListGroup.Item>Description: {product.description}</ListGroup.Item>
           </ListGroup>
         </Col>
-        <Col md={6} sm={12} lg={6} className="mt-4">
+
+        {/* Purchase Section */}
+        <Col md={6} className="mt-4">
           <Card>
             <ListGroup variant="flush">
               <ListGroup.Item>
