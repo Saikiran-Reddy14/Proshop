@@ -54,9 +54,43 @@ export const cartSlice = createSlice({
         })
       );
     },
+    removeFromCart: (state, action) => {
+      const id = action.payload;
+
+      // Remove item from cartItems
+      state.cartItems = state.cartItems.filter((x) => x._id !== id);
+
+      // Calculate items price (sum of item price * quantity)
+      const itemsPrice = state.cartItems.reduce(
+        (acc, item) => acc + item.price * item.qty,
+        0
+      );
+
+      // Calculate shipping price (if itemsPrice >= 500, no shipping, otherwise 99)
+      const shippingPrice = itemsPrice >= 500 ? 0 : 99;
+
+      // Calculate total price (itemsPrice + shippingPrice)
+      const totalPrice = itemsPrice + shippingPrice;
+
+      // Update state with the new values
+      state.itemsPrice = itemsPrice;
+      state.shippingPrice = shippingPrice;
+      state.totalPrice = totalPrice;
+
+      // Save the updated cart object to localStorage
+      localStorage.setItem(
+        'cart',
+        JSON.stringify({
+          cartItems: state.cartItems,
+          itemsPrice: state.itemsPrice,
+          shippingPrice: state.shippingPrice,
+          totalPrice: state.totalPrice,
+        })
+      );
+    },
   },
 });
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart, removeFromCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

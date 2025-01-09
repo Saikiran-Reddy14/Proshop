@@ -14,22 +14,23 @@ import { useGetProductDetailsQuery } from '../slices/productsApiSlice';
 import Rating from '../components/Rating';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../slices/cartSlice';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { cartItems } = useSelector((state) => state.cart);
+
+  const exists = cartItems.find((item) => item._id === id);
 
   const [qty, setQty] = useState(1);
 
   const { data: product, isLoading, error } = useGetProductDetailsQuery(id);
 
   const addToCartHandler = (product, qty) => {
-    console.log(qty);
     dispatch(addToCart({ ...product, qty }));
-    navigate('/cart');
   };
 
   if (isLoading) {
@@ -114,9 +115,10 @@ const ProductDetails = () => {
                     disabled={product.countInStock === 0}
                     onClick={() => {
                       addToCartHandler(product, qty);
+                      exists && navigate('/cart');
                     }}
                   >
-                    Add to Cart
+                    {exists ? 'Go to Cart' : 'Add to Cart'}
                   </Button>
                 </ListGroup.Item>
               )}
