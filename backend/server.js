@@ -16,11 +16,8 @@ connectDB();
 app.use(express.json());
 app.use('/api/products', productRoutes);
 
-app.get('*', (req, res) => {
-  res.status(404).send('Not Found');
-});
-
 app.use(notFound);
+
 app.use(errorHandler);
 
 app.listen(port, () => {
