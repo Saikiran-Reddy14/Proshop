@@ -21,14 +21,6 @@ const ProductDetails = () => {
     );
   }
 
-  const calculateTotalPrice = (price) => {
-    const itemsPrice = price;
-    const shippingPrice = itemsPrice >= 500 ? 0 : 99;
-    const taxPrice = (0.18 * itemsPrice).toFixed(0);
-
-    return Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice);
-  };
-
   return (
     <>
       <Link className="btn btn-light my-3" to="/">
@@ -60,7 +52,7 @@ const ProductDetails = () => {
               <ListGroup.Item>
                 <Row>
                   <Col>Price:</Col>
-                  <Col>₹{calculateTotalPrice(product.price)}</Col>
+                  <Col>₹{product.price}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
