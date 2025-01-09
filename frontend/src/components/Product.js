@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Rating from './Rating';
 
@@ -25,7 +25,6 @@ const Product = ({ product }) => {
           <Card.Text as={'h3'} className="mt-1">
             ₹{product.price}
           </Card.Text>
-          <Button className="mt-1">Add to Cart</Button>
         </Card.Body>
       </Card>
     </>
