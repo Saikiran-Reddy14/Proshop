@@ -1,7 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  cartItems: JSON.parse(localStorage.getItem('cartItems')) || [],
+  cartItems: JSON.parse(localStorage.getItem('cart'))?.cartItems || [],
+  itemsPrice: JSON.parse(localStorage.getItem('cart'))?.itemsPrice || 0,
+  shippingPrice: JSON.parse(localStorage.getItem('cart'))?.shippingPrice || 0,
+  totalPrice: JSON.parse(localStorage.getItem('cart'))?.totalPrice || 0,
 };
 
 export const cartSlice = createSlice({
@@ -10,27 +13,46 @@ export const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const item = action.payload;
-      const existItem = state.cartItems.find((x) => item._id === x._id);
 
-      if (!existItem) {
-        state.cartItems.push(item);
-      } else {
+      // Check if item already exists in cart
+      const existItem = state.cartItems.find((x) => x._id === item._id);
+
+      // Update cartItems by adding or updating the item
+      if (existItem) {
         state.cartItems = state.cartItems.map((x) =>
           x._id === existItem._id ? item : x
         );
+      } else {
+        state.cartItems = [...state.cartItems, item];
       }
 
-      // Recalculate total price and shipping price after any update
-      state.itemsPrice = state.cartItems.reduce(
+      // Calculate items price (sum of item price * quantity)
+      const itemsPrice = state.cartItems.reduce(
         (acc, item) => acc + item.price * item.qty,
         0
       );
 
-      state.shippingPrice = state.itemsPrice >= 500 ? 0 : 99;
-      state.totalPrice = (state.itemsPrice + state.shippingPrice).toFixed(0);
+      // Calculate shipping price (if itemsPrice >= 500, no shipping, otherwise 99)
+      const shippingPrice = itemsPrice >= 500 ? 0 : 99;
 
-      // Save the updated cart to localStorage
-      localStorage.setItem('cart', JSON.stringify(state));
+      // Calculate total price (itemsPrice + shippingPrice)
+      const totalPrice = (itemsPrice + shippingPrice).toFixed(0);
+
+      // Update state with the new values
+      state.itemsPrice = itemsPrice;
+      state.shippingPrice = shippingPrice;
+      state.totalPrice = totalPrice;
+
+      // Save the updated cart object to localStorage
+      localStorage.setItem(
+        'cart',
+        JSON.stringify({
+          cartItems: state.cartItems,
+          itemsPrice: state.itemsPrice,
+          shippingPrice: state.shippingPrice,
+          totalPrice: state.totalPrice,
+        })
+      );
     },
   },
 });
