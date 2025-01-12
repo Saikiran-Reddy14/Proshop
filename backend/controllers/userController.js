@@ -47,7 +47,52 @@ const authUser = asyncHandler(async (req, res) => {
 
 // register a new user
 const registerUser = asyncHandler(async (req, res) => {
-  res.send('register user');
+  const { name, email, password } = req.body;
+
+  // Check if required fields are present
+  if (!name.trim() || !email.trim() || !password.trim()) {
+    res.status(400);
+    throw new Error(
+      'Please provide all required fields (name, email, password)'
+    );
+  }
+
+  // Check if user already exists
+  const exists = await User.findOne({ email });
+
+  if (exists) {
+    res.status(400);
+    throw new Error('User already exists');
+  } else {
+    // Hash password before saving
+    const pwd = await bcrypt.hash(password, 12);
+    const user = new User({ name, email, password: pwd });
+
+    await user.save();
+
+    // Generate JWT token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '1d',
+    });
+
+    // Set JWT as an HTTP-Only cookie
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development', // Ensure this is correctly set in production
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+    // Send response with a success message and user info (excluding password)
+    res.status(201).json({
+      message: 'User registered successfully',
+      user: {
+        name: user.name,
+        email: user.email,
+        _id: user._id,
+      },
+    });
+  }
 });
 
 // logout user and clear cookie
