@@ -1,18 +1,33 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import FormContainer from '../components/FormContainer';
+import Message from '../components/Message';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const submitHandler = (e) => {
     e.preventDefault();
+
+    if (!email && !password) {
+      setError('Both email and password are required');
+      return;
+    } else if (!email) {
+      setError('Please enter your email');
+      return;
+    } else if (!password) {
+      setError('Please enter your password');
+      return;
+    }
+
+    // Successful form submission
     console.log('submitted', email, password);
     setEmail('');
     setPassword('');
+    setError('');
   };
 
   return (
@@ -45,6 +60,7 @@ const LoginPage = () => {
           Don't have an account? <Link to="/register">Register</Link>
         </Col>
       </Row>
+      {error && <Message variant="danger">{error}</Message>}
     </FormContainer>
   );
 };
