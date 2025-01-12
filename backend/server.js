@@ -12,9 +12,13 @@ const app = express();
 
 app.use(cors());
 connectDB();
-app.use(cookieParser());
+
+// Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Cookie parser middleware
+app.use(cookieParser());
 
 // Routes
 app.use('/api/products', productRoutes);
