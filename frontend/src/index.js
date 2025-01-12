@@ -10,6 +10,7 @@ import ErrorPage from './pages/ErrorPage';
 import { Provider } from 'react-redux';
 import store from './store';
 import CartPage from './pages/CartPage';
+import LoginPage from './pages/LoginPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,6 +22,7 @@ root.render(
             <Route index path="/" element={<HomePage />} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<CartPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="*" element={<ErrorPage />} />
           </Route>
         </Routes>
