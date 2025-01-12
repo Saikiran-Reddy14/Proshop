@@ -106,12 +106,61 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 // get user profile
 const getUserProfile = asyncHandler(async (req, res) => {
-  res.send('get user profile');
+  const user = await User.findById(req.user._id);
+  if (user) {
+    res.status(200).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
 });
 
 // update user profile
 const updateUserProfile = asyncHandler(async (req, res) => {
-  res.send('update user profile');
+  const user = await User.findById(req.user._id);
+  if (user) {
+    // Update user name and email if provided
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+
+    // If a new password is provided, hash it before saving
+    if (req.body.password) {
+      // Validate password length or other criteria if needed
+      if (req.body.password.length < 6) {
+        res.status(400);
+        throw new Error('Password must be at least 6 characters long');
+      }
+
+      user.password = await bcrypt.hash(req.body.password, 12);
+    }
+
+    // If email is updated, check for duplicates
+    if (req.body.email && req.body.email !== user.email) {
+      const emailExists = await User.findOne({ email: req.body.email });
+      if (emailExists) {
+        res.status(400);
+        throw new Error('Email is already in use');
+      }
+    }
+
+    // Save updated user data
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
 });
 
 // get all users
