@@ -80,7 +80,10 @@ const LoginPage = () => {
       </Form>
       <Row className="py-3">
         <Col>
-          Don't have an account? <Link to="/register">Register</Link>
+          Don't have an account?{' '}
+          <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>
+            Register
+          </Link>
         </Col>
       </Row>
     </FormContainer>
