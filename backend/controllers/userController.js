@@ -85,12 +85,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // Send response with a success message and user info (excluding password)
     res.status(201).json({
-      message: 'User registered successfully',
-      user: {
-        name: user.name,
-        email: user.email,
-        _id: user._id,
-      },
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
     });
   }
 });
