@@ -49,6 +49,7 @@ const LoginPage = () => {
 
   return (
     <FormContainer>
+      <h1>Sign In</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="email" className="my-3">
           <Form.Label>Email</Form.Label>
