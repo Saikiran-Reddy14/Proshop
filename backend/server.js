@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv').config();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const port = process.env.PORT || 5000;
 const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(cors());
 connectDB();
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
