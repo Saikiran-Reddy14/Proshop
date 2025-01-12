@@ -12,6 +12,7 @@ const app = express();
 app.use(cors());
 connectDB();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/products', productRoutes);

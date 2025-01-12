@@ -1,9 +1,28 @@
+const bcrypt = require('bcrypt');
 const asyncHandler = require('../middleware/asyncHandler');
 const User = require('../models/userModel');
 
 // authenticate user & get token
 const authUser = asyncHandler(async (req, res) => {
-  res.send('auth user');
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (user) {
+    const match = await bcrypt.compare(password, user.password);
+    if (match) {
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        token: null,
+      });
+    } else {
+      res.status(401);
+      throw new Error('Invalid email or password');
+    }
+  }
+  res.status(401);
+  throw new Error('User not found');
 });
 
 // register a new user
