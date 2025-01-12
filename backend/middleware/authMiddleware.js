@@ -4,11 +4,8 @@ const User = require('../models/userModel');
 
 // Protect routes
 const protect = asyncHandler(async (req, res, next) => {
-  let token;
-
   // Get the jwt from the cookie
-  token = req.cookies.jwt;
-  console.log('token: ', token);
+  let token = req.cookies.jwt;
 
   if (token) {
     try {
@@ -16,12 +13,14 @@ const protect = asyncHandler(async (req, res, next) => {
       req.user = await User.findById(decoded.userId).select('-password');
       next();
     } catch (error) {
+      console.log(error.name);
+
       res.status(401);
-      throw new Error(' Not authorized, token failed');
+      throw new Error('Not authorized: Invalid or expired token.');
     }
   } else {
     res.status(401);
-    throw new Error('Not authorized, no token');
+    throw new Error('Not authorized: Token not found. Please log in.');
   }
 });
 
@@ -31,7 +30,7 @@ const admin = (req, res, next) => {
     next();
   } else {
     res.status(401);
-    throw new Error('Not authorized as admin');
+    throw new Error('Access denied: Administrator privileges required.');
   }
 };
 
