@@ -9,6 +9,7 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         method: 'POST',
         body: { ...order },
       }),
+      providesTags: ['Order'],
     }),
   }),
 });
